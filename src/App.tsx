@@ -148,9 +148,10 @@ export default function App() {
             <div className="bg-indigo-600 p-2 rounded-xl text-white">
               <BrainCircuit className="w-6 h-6" />
             </div>
-            <h1 className="text-xl font-bold text-slate-800 tracking-tight">长难句拆解练习</h1>
+            <h1 className="text-xl font-bold text-slate-800 tracking-tight">句子翻译专项训练</h1>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col items-end gap-1">
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">著作权：藕叶英语 苏宁</div>
             <div className="flex -space-x-2">
               {SAMPLE_EXERCISES.map((_, i) => (
                 <div 
