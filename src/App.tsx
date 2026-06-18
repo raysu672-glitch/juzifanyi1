@@ -1,104 +1,17 @@
 import { motion, AnimatePresence } from "motion/react";
-import { 
-  CheckCircle2, 
-  ChevronRight, 
-  RefreshCcw, 
-  LineChart, 
-  BrainCircuit, 
+import {
+  CheckCircle2,
+  ChevronRight,
+  RefreshCcw,
+  LineChart,
+  BrainCircuit,
   Lightbulb,
   ArrowRight,
   Sparkles,
   Trophy
 } from "lucide-react";
 import { useState } from "react";
-
-interface TranslationStep {
-  label: string;
-  chinese: string;
-  hint: string;
-  correctAnswer: string;
-  keywords?: string[];
-}
-
-interface SentenceExercise {
-  fullChinese: string;
-  steps: TranslationStep[];
-  finalEnglish: string;
-  logicExplanation: string;
-}
-
-const SAMPLE_EXERCISES: SentenceExercise[] = [
-  {
-    fullChinese: "由于技术的快速进步，那些能够适应数字时代的公司的利润显著增加。",
-    finalEnglish: "Profits of companies that are able to adapt to the digital age have increased significantly due to rapid technological progress.",
-    logicExplanation: "主句核心是‘利润增加’。‘那些能够适应数字时代的公司的’是所有格修饰语，其中包含一个定语从句。‘由于技术的快速进步’是原因状语。",
-    steps: [
-      {
-        label: "核心骨架 (主谓论)",
-        chinese: "利润 已经增加了",
-        hint: "注意主语是复数 Profits，时态建议使用现在完成时。",
-        correctAnswer: "Profits have increased",
-        keywords: ["Profits (利润)", "Increase (增加)"]
-      },
-      {
-        label: "添加修饰 (定语/所有格)",
-        chinese: "公司 的 利润 已经增加了",
-        hint: "使用 'Profits of companies'。",
-        correctAnswer: "Profits of companies have increased",
-        keywords: ["Of (属于...的)"]
-      },
-      {
-        label: "嵌入从句",
-        chinese: "那些[能够适应数字时代的]公司的 利润 已经增加了",
-        hint: "使用 that 引导定语从句：that are able to adapt to the digital age。",
-        correctAnswer: "Profits of companies that are able to adapt to the digital age have increased",
-        keywords: ["Adapt to (适应)", "Digital age (数字时代)"]
-      },
-      {
-        label: "加入状语与完整细节",
-        chinese: "由于技术的快速进步，[上述主干] 显著地 增加了",
-        hint: "由于：due to；显著地：significantly；快速进步：rapid progress。",
-        correctAnswer: "Profits of companies that are able to adapt to the digital age have increased significantly due to rapid technological progress",
-        keywords: ["Due to (由于)", "Significant (显著的)", "Progress (进步)"]
-      }
-    ]
-  },
-  {
-    fullChinese: "科学家们最近发现，在这个偏远岛屿上发现的物种与世界上其他任何地方都不同。",
-    finalEnglish: "Scientists have recently discovered that the species found on this remote island are different from any others in the world.",
-    logicExplanation: "这是一个包含宾语从句的句子。宾语从句中的主语‘物种’后接了一个过去分词短语‘在这种偏远岛屿上发现的’作为后置定语。",
-    steps: [
-      {
-        label: "核心骨架",
-        chinese: "科学家们 发现 [这件事]",
-        hint: "时态使用现在完成时，最近使用 recently。",
-        correctAnswer: "Scientists have recently discovered",
-        keywords: ["Scientists (科学家)", "Recently (最近)", "Discover (发现)"]
-      },
-      {
-        label: "展开宾语从句核心",
-        chinese: "科学家们发现 [物种 是 不同的]",
-        hint: "Discover 后面接 that 引导的从句，注意 species 作复数处理。",
-        correctAnswer: "Scientists have recently discovered that the species are different",
-        keywords: ["Species (物种)", "Different (不同的)"]
-      },
-      {
-        label: "添加从句修饰语",
-        chinese: "科学家们发现 [在这个偏远岛屿上发现的物种] 是不同的",
-        hint: "‘在这个偏远岛屿上发现的’ 使用过去分词短语 found on... 作为后置定语。",
-        correctAnswer: "Scientists have recently discovered that the species found on this remote island are different",
-        keywords: ["Remote island (偏远岛屿)", "Found (发现/被发现)"]
-      },
-      {
-        label: "合并所有限制语",
-        chinese: "科学家们发现 ...物种 与世界上其他任何地方都 不同",
-        hint: "不同于：be different from；其他任何地方：any others in the world。",
-        correctAnswer: "Scientists have recently discovered that the species found on this remote island are different from any others in the world",
-        keywords: ["In the world (在世界上)"]
-      }
-    ]
-  }
-];
+import { EXERCISES } from "./data";
 
 export default function App() {
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
@@ -108,7 +21,7 @@ export default function App() {
   const [isFinished, setIsFinished] = useState(false);
   const [showHint, setShowHint] = useState(false);
 
-  const currentExercise = SAMPLE_EXERCISES[currentSentenceIndex];
+  const currentExercise = EXERCISES[currentSentenceIndex];
   const currentStep = currentExercise.steps[currentStepIndex];
 
   const normalize = (str: string) => str.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").replace(/\s{2,}/g, " ").trim();
@@ -134,7 +47,7 @@ export default function App() {
     setShowFeedback(false);
     setIsFinished(false);
     setShowHint(false);
-    setCurrentSentenceIndex((prev) => (prev + 1) % SAMPLE_EXERCISES.length);
+    setCurrentSentenceIndex((prev) => (prev + 1) % EXERCISES.length);
   };
 
   const isCorrect = normalize(userInput) === normalize(currentStep.correctAnswer);
@@ -148,20 +61,22 @@ export default function App() {
             <div className="bg-indigo-600 p-2 rounded-xl text-white">
               <BrainCircuit className="w-6 h-6" />
             </div>
-            <h1 className="text-xl font-bold text-slate-800 tracking-tight">句子翻译专项训练</h1>
+            <h1 className="text-xl font-bold text-slate-800 tracking-tight">大作文观点句翻译训练</h1>
           </div>
           <div className="flex flex-col items-end gap-1">
             <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">著作权：藕叶英语 苏宁</div>
+            <div className="text-xs text-slate-500">{currentExercise.category}</div>
             <div className="flex -space-x-2">
-              {SAMPLE_EXERCISES.map((_, i) => (
-                <div 
-                  key={i} 
+              {EXERCISES.slice(0, 10).map((_, i) => (
+                <div
+                  key={i}
                   className={`w-3 h-3 rounded-full border-2 border-white ${
-                    i === currentSentenceIndex ? "bg-indigo-600" : "bg-slate-300"
+                    i === currentSentenceIndex % 10 ? "bg-indigo-600" : "bg-slate-300"
                   }`}
                 />
               ))}
             </div>
+            <div className="text-xs text-slate-400">句子 {currentSentenceIndex + 1} / {EXERCISES.length}</div>
           </div>
         </div>
 
@@ -188,7 +103,7 @@ export default function App() {
               {/* Progress Steps */}
               <div className="flex gap-2 mb-2">
                 {currentExercise.steps.map((step, idx) => (
-                  <div 
+                  <div
                     key={idx}
                     className={`h-1.5 flex-1 rounded-full transition-all duration-500 ${
                       idx <= currentStepIndex ? "bg-indigo-600" : "bg-slate-200"
@@ -202,17 +117,17 @@ export default function App() {
                 <div className="absolute top-0 right-0 p-4 opacity-5">
                    <Sparkles className="w-24 h-24" />
                 </div>
-                
+
                 <div className="relative z-10">
                   <div className="flex items-center justify-between mb-6">
                     <span className="px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-full uppercase">
                       第 {currentStepIndex + 1} 步: {currentStep.label}
                     </span>
-                    <button 
+                    <button
                       onClick={() => setShowHint(!showHint)}
                       className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all ${
-                        showHint 
-                          ? "bg-amber-100 text-amber-700 shadow-inner" 
+                        showHint
+                          ? "bg-amber-100 text-amber-700 shadow-inner"
                           : "bg-slate-50 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600"
                       }`}
                     >
@@ -227,7 +142,7 @@ export default function App() {
                   </h3>
 
                   {showHint && (
-                    <motion.div 
+                    <motion.div
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       className="mb-6 space-y-3"
@@ -252,9 +167,9 @@ export default function App() {
                   )}
 
                   <div className="relative group">
-                    <textarea 
+                    <textarea
                       className={`w-full p-4 rounded-2xl border-2 bg-slate-50 text-lg font-mono transition-all focus:outline-none focus:ring-4 focus:ring-indigo-100 ${
-                        showFeedback 
+                        showFeedback
                           ? isCorrect ? "border-green-400" : "border-red-300"
                           : "border-slate-100 group-hover:border-indigo-100 focus:border-indigo-400"
                       }`}
@@ -285,7 +200,7 @@ export default function App() {
 
                   <div className="mt-8 flex gap-4">
                     {!showFeedback ? (
-                      <button 
+                      <button
                         onClick={handleCheck}
                         disabled={!userInput.trim()}
                         className="flex-1 bg-indigo-600 text-white font-bold py-4 rounded-2xl hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-indigo-200 active:scale-95"
@@ -293,11 +208,11 @@ export default function App() {
                         检查翻译
                       </button>
                     ) : (
-                      <button 
+                      <button
                         onClick={isCorrect ? handleNext : () => setShowFeedback(false)}
                         className={`flex-1 font-bold py-4 rounded-2xl transition-all shadow-lg flex items-center justify-center gap-2 ${
-                          isCorrect 
-                            ? "bg-green-600 text-white hover:bg-green-700 shadow-green-200" 
+                          isCorrect
+                            ? "bg-green-600 text-white hover:bg-green-700 shadow-green-200"
                             : "bg-slate-200 text-slate-700 hover:bg-slate-300 shadow-slate-100"
                         }`}
                       >
@@ -338,7 +253,7 @@ export default function App() {
                 </div>
               </div>
 
-              <button 
+              <button
                 onClick={handleReset}
                 className="w-full bg-slate-900 text-white font-bold py-5 rounded-3xl hover:bg-slate-800 transition-all flex items-center justify-center gap-3 active:scale-95"
               >
